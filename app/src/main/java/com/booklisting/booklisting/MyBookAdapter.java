@@ -30,8 +30,6 @@ public class MyBookAdapter extends ArrayAdapter<MyBook> {
                     R.layout.mybook_list_item, parent, false);
         }
 
-
-        // Find the earthquake at the given position in the list of earthquakes
         MyBook currentBook = getItem(position);
 
         TextView authorTextView = (TextView) listItemView.findViewById(R.id.mybookauthor);

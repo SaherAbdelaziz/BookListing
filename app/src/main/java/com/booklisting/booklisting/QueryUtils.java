@@ -80,7 +80,7 @@ class QueryUtils {
                 Log.e(LOG_TAG, "Error response code: " + urlConnection.getResponseCode());
             }
         } catch (IOException e) {
-            Log.e(LOG_TAG, "Problem retrieving the earthquake JSON results.", e);
+            Log.e(LOG_TAG, "Problem retrieving the books JSON results.", e);
         } finally {
             if (urlConnection != null) {
                 urlConnection.disconnect();
@@ -123,24 +123,16 @@ class QueryUtils {
                 String title  = properties.getString("title");
                 String author = "";
                 JSONArray authorsArray = properties.getJSONArray("authors");
-                int j = 0;
-                while (j < authorsArray.length()-1){
-                    author = author + authorsArray.getString(j)+", " ;
-                    j++;
+                for (int j=0 ; j<authorsArray.length() ; j++) {
+                    author += authorsArray.getString(j) + " , ";
                 }
-                author = author + authorsArray.getString(j);
-
                 MyBook myBook = new MyBook(title, author);
                 myBooks.add(myBook);
             }
 
         } catch (JSONException e) {
-            Log.e("QueryUtils", "Problem parsing the earthquake JSON results", e);
+            Log.e("QueryUtils", "Problem parsing the books JSON results", e);
         }
-            /*for(int i=0 ; i<1 ; i++){
-                MyBook myBook = new MyBook("HI", "HI");
-                myBooks.add(myBook);
-            }*/
 
         return myBooks;
     }

@@ -79,15 +79,12 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     loadingIndicator.setVisibility(View.VISIBLE);
 
                     EditText search_book = (EditText) findViewById(R.id.Search_text);
+                    
                     if(TextUtils.isEmpty(search_book.getText().toString().trim()))
-                    {
                         mEmptyStateTextView.setText(R.string.no_books);
-                    }
-                    else
-                    {
 
+                    else
                         getLoaderManager().restartLoader(MYBOOK_LOADER_ID, null, MainActivity.this);
-                    }
                 }
                 else
                 {
