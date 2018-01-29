@@ -7,9 +7,9 @@ package com.booklisting.booklisting;
 public class MyBook {
 
     private String mTitle;
-    private StringBuilder mAuthor;
+    private String mAuthor;
 
-    public MyBook(String title, StringBuilder author){
+    public MyBook(String title, String author){
         mTitle = title;
         mAuthor = author;
     }
@@ -22,10 +22,10 @@ public class MyBook {
         this.mTitle = mTitle;
     }
 
-    public StringBuilder getmAuthor() {
+    public String getmAuthor() {
         return mAuthor;
     }
-    public void setmAuthor(StringBuilder mAuthor) {
+    public void setmAuthor(String mAuthor) {
         this.mAuthor = mAuthor;
     }
 }

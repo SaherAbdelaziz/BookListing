@@ -2,6 +2,7 @@ package com.booklisting.booklisting;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -35,6 +36,7 @@ class QueryUtils {
         String jsonResponse = null;
         try {
             jsonResponse = makeHttpRequest(url);
+
         } catch (IOException e) {
             Log.e(LOG_TAG, "Problem making the HTTP request.", e);
         }
@@ -62,12 +64,15 @@ class QueryUtils {
         HttpURLConnection urlConnection = null;
         InputStream inputStream = null;
         try {
+
             urlConnection = (HttpURLConnection) url.openConnection();
+
             urlConnection.setReadTimeout(10000 /* milliseconds */);
+
             urlConnection.setConnectTimeout(15000 /* milliseconds */);
             urlConnection.setRequestMethod("GET");
-            urlConnection.connect();
 
+            urlConnection.connect();
             if (urlConnection.getResponseCode() == 200) {
                 inputStream = urlConnection.getInputStream();
                 jsonResponse = readFromStream(inputStream);
@@ -116,15 +121,14 @@ class QueryUtils {
                     JSONObject properties = currentMyBook.getJSONObject("volumeInfo");
 
                 String title  = properties.getString("title");
-                StringBuilder author = new StringBuilder();
-                //String author = "";
+                String author = "";
                 JSONArray authorsArray = properties.getJSONArray("authors");
-
-                for (int j = 0 ; j < authorsArray.length(); j++)
-                {
-                    author.append(authorsArray.getString(j));
-                    author.append(", ") ;
+                int j = 0;
+                while (j < authorsArray.length()-1){
+                    author = author + authorsArray.getString(j)+", " ;
+                    j++;
                 }
+                author = author + authorsArray.getString(j);
 
                 MyBook myBook = new MyBook(title, author);
                 myBooks.add(myBook);
@@ -133,6 +137,10 @@ class QueryUtils {
         } catch (JSONException e) {
             Log.e("QueryUtils", "Problem parsing the earthquake JSON results", e);
         }
+            /*for(int i=0 ; i<1 ; i++){
+                MyBook myBook = new MyBook("HI", "HI");
+                myBooks.add(myBook);
+            }*/
 
         return myBooks;
     }

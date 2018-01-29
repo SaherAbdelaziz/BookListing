@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -49,22 +50,19 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
         myBookListView.setAdapter(mAdapter);
 
-
-
         final ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
-        if (networkInfo != null && networkInfo.isConnected())
-        {
-            View loadingIndicator = findViewById(R.id.progressBar);
+        if (networkInfo != null && networkInfo.isConnected()) {
+            View loadingIndicator = findViewById(R.id.loading_indicator);
             loadingIndicator.setVisibility(View.VISIBLE);
             LoaderManager loaderManager = getLoaderManager();
             loaderManager.initLoader(MYBOOK_LOADER_ID, null, this);
         }
         else
         {
-            View loadingIndicator = findViewById(R.id.progressBar);
+            View loadingIndicator = findViewById(R.id.loading_indicator);
             loadingIndicator.setVisibility(View.GONE);
             mEmptyStateTextView.setText(R.string.no_internet_connection);
         }
@@ -77,29 +75,33 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                 if (networkInfo != null && networkInfo.isConnected()) {
                     mAdapter.clear();
                     mEmptyStateTextView.setVisibility(View.GONE);
-                    View loadingIndicator = findViewById(R.id.progressBar);
+                    View loadingIndicator = findViewById(R.id.loading_indicator);
                     loadingIndicator.setVisibility(View.VISIBLE);
 
                     EditText search_book = (EditText) findViewById(R.id.Search_text);
                     if(TextUtils.isEmpty(search_book.getText().toString().trim()))
                     {
-                        // If the search is on empty text
                         mEmptyStateTextView.setText(R.string.no_books);
                     }
                     else
                     {
+
                         getLoaderManager().restartLoader(MYBOOK_LOADER_ID, null, MainActivity.this);
                     }
+                }
+                else
+                {
+                    mAdapter.clear();
+                    View loadingIndicator = findViewById(R.id.loading_indicator);
+                    loadingIndicator.setVisibility(View.GONE);
+                    mEmptyStateTextView.setText(R.string.no_internet_connection);
                 }
             }
         });
     }
 
-
     @Override
     public Loader<List<MyBook>> onCreateLoader(int i, Bundle bundle) {
-        //Uri baseUri = Uri.parse(MYBOOK_REQUEST_URL);
-        //Uri.Builder uriBuilder = baseUri.buildUpon();
 
         EditText search_book = (EditText) findViewById(R.id.Search_text);
         String queryBook = search_book.getText().toString().trim();
@@ -110,18 +112,17 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             Log.e(LOG_TAG, "Error with creating URL", exception);
             return null;
         }
-        //uriBuilder.appendQueryParameter(getString(R.string.q), queryBook);
-        //uriBuilder.appendQueryParameter(getString(R.string.max_results), "10");
         return new MyBookLoader(this, url.toString());
     }
 
     @Override
     public void onLoadFinished(Loader<List<MyBook>> loader, List<MyBook> myBooks) {
-        View loadingIndicator = findViewById(R.id.progressBar);
+        View loadingIndicator = findViewById(R.id.loading_indicator);
             loadingIndicator.setVisibility(View.GONE);
 
-        mEmptyStateTextView.setText(R.string.no_books);
-
+        if(myBooks == null) {
+            mEmptyStateTextView.setText(R.string.no_books);
+        }
         mAdapter.clear();
 
         if (myBooks != null && !myBooks.isEmpty()) {
