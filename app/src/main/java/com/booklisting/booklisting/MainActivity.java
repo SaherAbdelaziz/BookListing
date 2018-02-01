@@ -2,22 +2,18 @@ package com.booklisting.booklisting;
 
 import android.app.LoaderManager;
 import android.content.Context;
-import android.content.Intent;
 import android.content.Loader;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -81,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
                     EditText search_book = (EditText) findViewById(R.id.Search_text);
 
                     if(TextUtils.isEmpty(search_book.getText().toString().trim()))
-                        mEmptyStateTextView.setText(R.string.no_books);
+                        mEmptyStateTextView.setText(R.string.no_search_text);
 
                     else
                         getLoaderManager().restartLoader(MYBOOK_LOADER_ID, null, MainActivity.this);
