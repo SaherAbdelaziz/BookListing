@@ -27,7 +27,8 @@ class QueryUtils {
 
     private static final String LOG_TAG = QueryUtils.class.getSimpleName();
 
-    private QueryUtils() {}
+    private QueryUtils() {
+    }
 
     public static List<MyBook> fetchMyBookData(String requestUrl) {
         URL url = createUrl(requestUrl);
@@ -113,20 +114,27 @@ class QueryUtils {
         List<MyBook> myBooks = new ArrayList<>();
         try {
             JSONObject baseJsonResponse = new JSONObject(MyBookJSON);
-            JSONArray MyBookArray = baseJsonResponse.getJSONArray("items");
+            if (baseJsonResponse.has("items")) {
+                JSONArray MyBookArray = baseJsonResponse.getJSONArray("items");
 
-            for (int i = 0; i < MyBookArray.length(); i++) {
-                JSONObject currentMyBook = MyBookArray.getJSONObject(i);
-                    JSONObject properties = currentMyBook.getJSONObject("volumeInfo");
+                for (int i = 0; i < MyBookArray.length(); i++) {
+                    JSONObject currentMyBook = MyBookArray.getJSONObject(i);
+                    if(currentMyBook.has("volumeInfo")) {
+                        JSONObject properties = currentMyBook.getJSONObject("volumeInfo");
+                        if (properties.has("title") && properties.has("authors")) {
+                            String title = properties.getString("title");
+                            String author = "";
 
-                String title  = properties.getString("title");
-                String author = "";
-                JSONArray authorsArray = properties.getJSONArray("authors");
-                for (int j=0 ; j<authorsArray.length() ; j++) {
-                    author += authorsArray.getString(j) + " , ";
+                            JSONArray authorsArray = properties.getJSONArray("authors");
+
+                            for (int j = 0; j < authorsArray.length(); j++) {
+                                author += authorsArray.getString(j) + " , ";
+                            }
+                            MyBook myBook = new MyBook(title, author);
+                            myBooks.add(myBook);
+                        }
+                    }
                 }
-                MyBook myBook = new MyBook(title, author);
-                myBooks.add(myBook);
             }
 
         } catch (JSONException e) {

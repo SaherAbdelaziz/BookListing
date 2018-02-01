@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -43,7 +44,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
         myBookListView.setEmptyView(mEmptyStateTextView);
         Button myButton = (Button) findViewById(R.id.button_search);
         mAdapter = new MyBookAdapter(this, new ArrayList<MyBook>());
-
+        mEmptyStateTextView.setText(R.string.no_search_text);
         myBookListView.setAdapter(mAdapter);
 
         final ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -56,8 +57,7 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
             LoaderManager loaderManager = getLoaderManager();
             loaderManager.initLoader(MYBOOK_LOADER_ID, null, this);
         }
-        else
-        {
+        else {
             View loadingIndicator = findViewById(R.id.loading_indicator);
             loadingIndicator.setVisibility(View.GONE);
             mEmptyStateTextView.setText(R.string.no_internet_connection);
@@ -70,20 +70,20 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
 
                 if (networkInfo != null && networkInfo.isConnected()) {
                     mAdapter.clear();
-                    mEmptyStateTextView.setVisibility(View.GONE);
                     View loadingIndicator = findViewById(R.id.loading_indicator);
-                    loadingIndicator.setVisibility(View.VISIBLE);
-
                     EditText search_book = (EditText) findViewById(R.id.Search_text);
-
-                    if(TextUtils.isEmpty(search_book.getText().toString().trim()))
+                    if (TextUtils.isEmpty(search_book.getText().toString().trim())) {
+                        loadingIndicator.setVisibility(View.GONE);
+                        mEmptyStateTextView.setVisibility(View.VISIBLE);
                         mEmptyStateTextView.setText(R.string.no_search_text);
-
-                    else
+                    }
+                    else {
+                        mEmptyStateTextView.setVisibility(View.GONE);
+                        loadingIndicator.setVisibility(View.VISIBLE);
                         getLoaderManager().restartLoader(MYBOOK_LOADER_ID, null, MainActivity.this);
+                    }
                 }
-                else
-                {
+                else {
                     mAdapter.clear();
                     View loadingIndicator = findViewById(R.id.loading_indicator);
                     loadingIndicator.setVisibility(View.GONE);
@@ -111,13 +111,16 @@ public class MainActivity extends AppCompatActivity implements LoaderManager.Loa
     @Override
     public void onLoadFinished(Loader<List<MyBook>> loader, List<MyBook> myBooks) {
         View loadingIndicator = findViewById(R.id.loading_indicator);
-            loadingIndicator.setVisibility(View.GONE);
+        loadingIndicator.setVisibility(View.GONE);
 
-        if(myBooks == null) {
-            mEmptyStateTextView.setText(R.string.no_books);
-        }
         mAdapter.clear();
-
+        EditText search_book = (EditText) findViewById(R.id.Search_text);
+        if (TextUtils.isEmpty(search_book.getText().toString().trim())) {
+            mEmptyStateTextView.setText(R.string.no_search_text);
+        }
+        else {
+        mEmptyStateTextView.setText(R.string.no_books);
+        }
         if (myBooks != null && !myBooks.isEmpty()) {
             mAdapter.addAll(myBooks);
         }

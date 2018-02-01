@@ -4,7 +4,6 @@
     <string name="no_books"> No books found , try writing another words </string>
     <string name="no_search_text"> Write a book name to search for </string>
     <string name="no_internet_connection"> No internet connection. </string>
-
     <string name="Search_text"> Write name of the book </string>
     <string name="q">q</string>
     <string name="max_results">maxResults</string>
